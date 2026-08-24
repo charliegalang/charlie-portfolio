@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Merriweather:wght@300;400;700&family=Roboto+Mono&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Root level theme variables */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #F5F5F5;
+  --text-primary: #1E1E1E;
+  --text-secondary: #4A4A4A;
+  --gold-primary: #facc15;
+  --nav-bg: rgba(255, 255, 255, 0.8);
+  --theme-line: #EAB308;
+  --theme-icon: #EAB308;
+}
+
+html.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --text-primary: #ffffff;
+  --text-secondary: #A0A0A0;
+  --nav-bg: rgba(0, 0, 0, 0.8);
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.5s ease, color 0.5s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Global overflow and word wrap protection */
+* {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* Utility classes */
+.bg-theme-primary { background-color: var(--bg-primary); }
+.bg-theme-secondary { background-color: var(--bg-secondary); }
+.text-theme-primary { color: var(--text-primary) !important; }
+.text-theme-secondary { color: var(--text-secondary) !important; }
+
+/* Icon Theme utilities */
+.text-theme-icon { color: var(--theme-icon) !important; }
+.bg-theme-icon { background-color: var(--theme-icon) !important; }
+.border-theme-icon { border-color: var(--theme-icon) !important; }
+.ring-theme-icon { --tw-ring-color: var(--theme-icon) !important; }
+
+/* Line Theme utilities */
+.text-theme-line { color: var(--theme-line) !important; }
+.bg-theme-line { background-color: var(--theme-line) !important; }
+.border-theme-line { border-color: var(--theme-line) !important; }
+.ring-theme-line { --tw-ring-color: var(--theme-line) !important; }
+
+/* Legacy compatibility classes */
+.text-theme-highlight { color: var(--theme-icon) !important; }
+.bg-theme-highlight { background-color: var(--theme-icon) !important; }
+
+.border-theme { border-color: rgba(128, 128, 128, 0.1); }
+html.dark .border-theme { border-color: rgba(255, 255, 255, 0.1); }
+
+/* Hide scrollbar utility */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Force children to inherit navigation color and override any inline styles from editor */
+.nav-force-color, .nav-force-color * {
+  color: var(--nav-current-color) !important;
+}
+
+/* Remove default video controls shadow/gradient */
+video::-webkit-media-controls-enclosure {
+    background-color: transparent !important;
+}
+video::-webkit-media-controls-panel {
+    background-image: none !important;
+    background-color: transparent !important;
+}
+
+/* Rich Text Editor Overrides */
+[contenteditable] { outline: none; }
+[contenteditable] b, [contenteditable] strong { font-weight: bold; }
+[contenteditable] i, [contenteditable] em { font-style: italic; }
+[contenteditable] u { text-decoration: underline; }
+
+/*
+ * RICH TEXT EDITOR MODAL - READABILITY
+ */
+.RichTextEditor-content {
+  background-color: #1a1a1a;
+}
+
+@media (max-width: 640px) {
+  [style*="font-size"] {
+    font-size: clamp(12px, 5vw, 40px) !important;
+  }
+
+  .hero-section-container [style*="font-size"] {
+    font-size: clamp(28px, 12vw, 55px) !important;
+  }
+
+  h1, h2, h3, .hero-section-container div {
+    max-width: 100vw;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+.hero-section-container {
+  background-color: black;
+}
+
+.hero-bg-image {
+  filter: none !important;
+}
