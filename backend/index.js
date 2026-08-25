@@ -19,7 +19,7 @@ app.use(express.urlencoded({ limit: '100mb', extended: true }));
 // Allow CORS from multiple origins
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  'https://designs.ronmedina.cc',
+  'https://charlie-portfolio-o5wo.onrender.com',
   'http://localhost:5173'
 ].filter(Boolean);
 
