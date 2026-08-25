@@ -71,7 +71,6 @@ const GallerySection = ({
     }
   }, [currentIndex, images]);
 
-  // Safeguard: Ensure currentIndex is valid if images list changes
   useEffect(() => {
     if (currentIndex >= images.length) {
       setCurrentIndex(Math.max(0, images.length - 1));
@@ -115,26 +114,18 @@ const GallerySection = ({
   const currentImage = images[currentIndex];
 
   const getLineAlignmentClasses = () => {
-    const checkCenter = (val) => {
-      if (!val || typeof val !== 'string') return false;
-      const lower = val.toLowerCase();
-      return lower.includes('text-align: center') || lower.includes('text-align:center') || lower.includes('<center');
-    };
-    const checkRight = (val) => {
-      if (!val || typeof val !== 'string') return false;
-      const lower = val.toLowerCase();
-      return lower.includes('text-align: right') || lower.includes('text-align:right');
-    };
     const subStr = getContentString(subtitle);
     const titleStr = getContentString(title);
-    const alignmentValue = (subStr && subStr.trim() !== '' && subStr !== '<br>') ? subStr : titleStr;
-    if (checkCenter(alignmentValue)) return 'mx-auto';
-    if (checkRight(alignmentValue)) return 'ml-auto mr-0';
+    const val = (subStr && subStr.trim() !== '' && subStr !== '<br>') ? subStr : titleStr;
+    if (!val || typeof val !== 'string') return 'mr-auto';
+    const lower = val.toLowerCase();
+    if (lower.includes('text-align: center') || lower.includes('text-align:center') || lower.includes('<center')) return 'mx-auto';
+    if (lower.includes('text-align: right') || lower.includes('text-align:right')) return 'ml-auto mr-0';
     return 'mr-auto';
   }
 
   return (
-    <div className={`mb-32 relative group/section ${!isVisible && isEditMode ? 'opacity-50 grayscale' : ''}`}>
+    <div className={`mb-16 sm:mb-32 relative group/section ${!isVisible && isEditMode ? 'opacity-50 grayscale' : ''}`}>
       <ImageUploadModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
@@ -152,33 +143,33 @@ const GallerySection = ({
       />
 
       {isEditMode && (
-        <div className="absolute -top-12 right-0 flex items-center gap-2 bg-theme-secondary/80 backdrop-blur-md p-1.5 rounded-full border border-theme z-30 shadow-lg">
+        <div className="absolute -top-12 right-0 flex items-center gap-2 bg-theme-secondary/80 backdrop-blur-md p-1.5 rounded-full border border-theme z-30 shadow-lg scale-90 sm:scale-100">
           <button
             onClick={onToggleVisibility}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${isVisible ? 'bg-green-500/20 border-green-500/50 text-green-500' : 'bg-red-500/20 border-red-500/50 text-red-500'}`}
           >
-            {isVisible ? <Eye size={16} /> : <EyeOff size={16} />}
-            <span className="text-[10px] font-bold uppercase">{isVisible ? 'Visible' : 'Hidden'}</span>
+            {isVisible ? <Eye size={14} /> : <EyeOff size={14} />}
+            <span className="text-[9px] font-bold uppercase">{isVisible ? 'Visible' : 'Hidden'}</span>
           </button>
           <div className="w-[1px] h-4 bg-theme/20 mx-1" />
           {showMoveUp && (
-            <button onClick={onMoveUp} className="p-2 bg-[#EAB308] text-black rounded-full hover:opacity-80 transition-all"><ChevronUp size={16} /></button>
+            <button onClick={onMoveUp} className="p-1.5 bg-[#EAB308] text-black rounded-full hover:opacity-80 transition-all"><ChevronUp size={14} /></button>
           )}
           {showMoveDown && (
-            <button onClick={onMoveDown} className="p-2 bg-[#EAB308] text-black rounded-full hover:opacity-80 transition-all"><ChevronDown size={16} /></button>
+            <button onClick={onMoveDown} className="p-1.5 bg-[#EAB308] text-black rounded-full hover:opacity-80 transition-all"><ChevronDown size={14} /></button>
           )}
-          <button onClick={onDeleteSection} className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"><Trash size={16} /></button>
+          <button onClick={onDeleteSection} className="p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"><Trash size={14} /></button>
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 mb-8">
+      <div className="max-w-7xl mx-auto px-4 mb-6 sm:mb-8">
         <div className="relative w-full text-center">
           <div className="w-full">
             <RichTextEditor
               value={getContentString(title)}
               onSave={(val) => onTitleEdit(val, mode)}
               isEditMode={isEditMode}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-theme-primary w-full"
+              className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-theme-primary w-full"
               placeholder="Section Title"
             />
 
@@ -187,28 +178,26 @@ const GallerySection = ({
                 value={getContentString(subtitle)}
                 onSave={(val) => onSubtitleEdit(val, mode)}
                 isEditMode={isEditMode}
-                className="mt-4 text-theme-secondary text-lg w-full"
+                className="mt-3 sm:mt-4 text-theme-secondary text-base sm:text-lg w-full"
                 placeholder="Section Subtitle"
               />
             )}
-            <div
-              className={`h-[2px] w-24 mt-6 transition-all duration-500 bg-theme-line ${getLineAlignmentClasses()}`}
-            />
+            <div className={`h-[2px] w-16 sm:w-24 mt-4 sm:mt-6 transition-all duration-500 bg-theme-line ${getLineAlignmentClasses()}`} />
           </div>
 
           {isEditMode && (
-            <div className="flex flex-wrap justify-center items-center gap-6 py-6 relative">
+            <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 py-4 sm:py-6 relative">
               <button
                 onClick={() => setIsUploadModalOpen(true)}
-                className="flex items-center gap-2 px-8 py-4 bg-[#EAB308] text-black rounded-full font-bold hover:scale-105 active:scale-95 transition-all shadow-xl whitespace-nowrap"
+                className="flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-[#EAB308] text-black rounded-full font-bold text-xs sm:text-base hover:scale-105 transition-all shadow-xl"
               >
-                <Upload size={20} /> Upload New Images
+                <Upload size={18} /> Upload
               </button>
               <button
                 onClick={() => setIsManagementModalOpen(true)}
-                className="flex items-center gap-2 px-8 py-4 bg-theme-primary text-[#EAB308] border border-[#EAB308] rounded-full font-bold hover:bg-[#EAB308] hover:text-black transition-all shadow-xl group whitespace-nowrap"
+                className="flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 bg-theme-primary text-[#EAB308] border border-[#EAB308] rounded-full font-bold text-xs sm:text-base hover:bg-[#EAB308] hover:text-black transition-all shadow-xl group"
               >
-                <Settings size={20} className="group-hover:rotate-90 transition-transform duration-500" /> Manage Gallery
+                <Settings size={18} className="group-hover:rotate-90 transition-transform duration-500" /> Manage
               </button>
             </div>
           )}
@@ -216,8 +205,8 @@ const GallerySection = ({
       </div>
 
       {images.length === 0 ? (
-        <div className="text-center py-12 bg-theme-secondary/20 rounded-2xl border border-dashed border-theme-line/30 mx-4">
-          <p className="text-lg text-theme-primary">No designs available yet.</p>
+        <div className="text-center py-10 sm:py-12 bg-theme-secondary/20 rounded-2xl border border-dashed border-theme-line/30 mx-4">
+          <p className="text-sm sm:text-lg text-theme-primary opacity-60">No designs available yet.</p>
         </div>
       ) : (
         <div className="max-w-7xl mx-auto px-4" onMouseEnter={() => setIsAutoPlaying(false)} onMouseLeave={() => setIsAutoPlaying(true)}>
@@ -225,60 +214,71 @@ const GallerySection = ({
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative min-h-[250px] sm:min-h-[400px] lg:min-h-[700px] aspect-video group cursor-pointer flex items-center justify-center overflow-hidden rounded-3xl bg-theme-secondary/10 border border-theme/10"
+            className="relative aspect-[4/5] sm:aspect-video min-h-[300px] sm:min-h-[400px] lg:min-h-[700px] group cursor-pointer flex items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl bg-theme-secondary/10 border border-theme/10"
             onClick={() => onImageClick(currentImage)}
           >
             {!mainImageLoaded && (
               <div className="absolute inset-0 flex items-center justify-center z-10">
-                <div className="w-12 h-12 border-4 border-theme-line border-t-transparent rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-theme-line border-t-transparent rounded-full animate-spin" />
               </div>
             )}
             <AnimatePresence mode="wait">
               <motion.img
                 ref={mainImageRef}
-                key={currentImage?.public_id || currentImage?.url || currentIndex}
+                key={currentImage?.public_id || currentIndex}
                 src={getOptimizedUrl(currentImage?.url, 'image', 1600)}
                 alt={cleanTitle}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className={`max-w-full max-h-full object-contain drop-shadow-2xl transition-opacity duration-500 image-preserve ${mainImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                transition={{ duration: 0.4 }}
+                className={`max-w-full max-h-full object-contain transition-opacity duration-500 ${mainImageLoaded ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={() => setMainImageLoaded(true)}
-                onError={() => setMainImageLoaded(true)}
               />
             </AnimatePresence>
             {images.length > 1 && (
               <>
-                <button onClick={(e) => { e.stopPropagation(); prevImage(); }} className="absolute left-4 top-1/2 -translate-y-1/2 p-2 sm:p-4 bg-black/30 hover:bg-black/60 backdrop-blur-md rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all hover:scale-110 z-10 text-white"><ChevronLeft size={24} className="sm:w-8 sm:h-8" /></button>
-                <button onClick={(e) => { e.stopPropagation(); nextImage(); }} className="absolute right-4 top-1/2 -translate-y-1/2 p-2 sm:p-4 bg-black/30 hover:bg-black/60 backdrop-blur-md rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all hover:scale-110 z-10 text-white"><ChevronRight size={24} className="sm:w-8 sm:h-8" /></button>
+                <button onClick={(e) => { e.stopPropagation(); prevImage(); }} className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 sm:p-4 bg-black/40 sm:bg-black/20 hover:bg-black/60 backdrop-blur-md rounded-full transition-all text-white"><ChevronLeft size={24} className="sm:w-8 sm:h-8" /></button>
+                <button onClick={(e) => { e.stopPropagation(); nextImage(); }} className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2 sm:p-4 bg-black/40 sm:bg-black/20 hover:bg-black/60 backdrop-blur-md rounded-full transition-all text-white"><ChevronRight size={24} className="sm:w-8 sm:h-8" /></button>
               </>
             )}
           </motion.div>
 
-          <div className="flex justify-between items-center mt-6 px-2">
-            <div className="flex gap-1.5">
+          <div className="flex justify-between items-center mt-4 sm:mt-6 px-1">
+            <div className="flex gap-1">
               {images.map((img, index) => (
-                <div key={img.public_id || `dot-${index}`} className={`h-1.5 rounded-full transition-all duration-300 ${index === currentIndex ? 'w-8 bg-theme-line' : 'w-2 bg-theme-secondary opacity-40'}`} />
+                <div key={`dot-${img.public_id || index}`} className={`h-1 rounded-full transition-all duration-300 ${index === currentIndex ? 'w-6 sm:w-8 bg-theme-line' : 'w-1.5 sm:w-2 bg-theme-secondary opacity-40'}`} />
               ))}
             </div>
-            <div className="px-3 py-1 bg-theme-secondary/20 backdrop-blur-sm rounded-full text-theme-primary text-xs font-bold">{currentIndex + 1} / {images.length}</div>
+            <div className="px-2 py-1 bg-theme-secondary/20 rounded-full text-theme-primary text-[10px] font-black">{currentIndex + 1} / {images.length}</div>
           </div>
+
           {images.length > 1 && (
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-wrap justify-center gap-3 mt-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="flex flex-wrap justify-center gap-3 mt-8"
+            >
               {images.map((img, index) => (
-                <motion.div key={`thumb-${id}-${img.public_id || index}`} whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} className={getThumbnailWidth()}>
-                  <div className={`relative w-full pb-[100%] rounded-lg overflow-hidden bg-black cursor-pointer transition-all duration-300 border-2 ${index === currentIndex ? 'border-theme-line shadow-xl scale-110 z-10' : 'border-transparent opacity-50 hover:opacity-100'}`} onClick={() => selectImage(index)}>
-                    {!thumbnailsLoaded[index] && (<div className="absolute inset-0 flex items-center justify-center bg-black z-10"><div className="w-6 h-6 border-2 border-theme-line border-t-transparent rounded-full animate-spin" /></div>)}
+                <motion.div
+                  key={`thumb-${img.public_id || index}`}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={getThumbnailWidth()}
+                >
+                  <div
+                    className={`relative w-full pb-[100%] rounded-lg overflow-hidden bg-black/5 cursor-pointer transition-all duration-300 border-2 ${index === currentIndex ? 'border-theme-line shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'}`}
+                    onClick={() => selectImage(index)}
+                  >
+                    {!thumbnailsLoaded[index] && (<div className="absolute inset-0 flex items-center justify-center"><div className="w-4 h-4 border-2 border-theme-line border-t-transparent rounded-full animate-spin" /></div>)}
                     <img
-                      src={getOptimizedUrl(img.url, 'image', 400)}
+                      src={getOptimizedUrl(img.url, 'image', 300)}
                       alt=""
-                      className={`absolute inset-0 w-full h-full object-contain p-1 transition-opacity duration-300 image-preserve ${thumbnailsLoaded[index] ? 'opacity-100' : 'opacity-0'}`}
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${thumbnailsLoaded[index] ? 'opacity-100' : 'opacity-0'}`}
                       onLoad={() => handleThumbnailLoad(index)}
-                      onError={() => handleThumbnailLoad(index)}
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none"><Maximize2 size={20} className="text-white" /></div>
                   </div>
                 </motion.div>
               ))}
