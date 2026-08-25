@@ -41,13 +41,23 @@ export const useGalleryState = (initialPortfolioRef, sessionUploadsRef, getAllPu
 
   const updateGalleryImages = (id, imagesOrFn) => setGallerySections(prev => prev.map(s => {
     if (s.id === id) {
-      const newImages = typeof imagesOrFn === 'function' ? imagesOrFn(s.images) : imagesOrFn;
-      newImages.forEach(img => {
+      let nextImages = typeof imagesOrFn === 'function' ? imagesOrFn(s.images) : imagesOrFn;
+
+      // Deduplicate by public_id to prevent UI duplication bugs
+      const seen = new Set();
+      nextImages = nextImages.filter(img => {
+        if (!img.public_id) return true;
+        if (seen.has(img.public_id)) return false;
+        seen.add(img.public_id);
+        return true;
+      });
+
+      nextImages.forEach(img => {
         if (img.public_id && !getAllPublicIds(initialPortfolioRef.current).has(img.public_id)) {
           sessionUploadsRef.current.add(img.public_id);
         }
       });
-      return { ...s, images: newImages };
+      return { ...s, images: nextImages };
     }
     return s;
   }));

@@ -13,8 +13,9 @@ export const uploadImage = async (req, res) => {
     const uploadOptions = {
       tags: [tag],
       folder: "portfolio",
+      use_filename: false,
+      unique_filename: true,
       resource_type: isVideo ? "video" : (isSvg ? "image" : "auto"),
-      // Add a high timeout (10 minutes in milliseconds) for large videos
       timeout: 600000
     };
 
@@ -48,7 +49,6 @@ export const uploadImage = async (req, res) => {
 
   } catch (error) {
     console.error('Cloudinary Upload Error:', error);
-    // Specifically handle timeouts to give better feedback
     if (error.http_code === 499 || error.name === 'TimeoutError') {
       return res.status(504).json({
         message: 'Upload timed out. The file might be too large for the current server connection.',

@@ -225,7 +225,7 @@ const GallerySection = ({
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative min-h-[400px] lg:min-h-[700px] aspect-video group cursor-pointer flex items-center justify-center overflow-hidden rounded-3xl bg-theme-secondary/10 border border-theme/10"
+            className="relative min-h-[250px] sm:min-h-[400px] lg:min-h-[700px] aspect-video group cursor-pointer flex items-center justify-center overflow-hidden rounded-3xl bg-theme-secondary/10 border border-theme/10"
             onClick={() => onImageClick(currentImage)}
           >
             {!mainImageLoaded && (
@@ -236,7 +236,7 @@ const GallerySection = ({
             <AnimatePresence mode="wait">
               <motion.img
                 ref={mainImageRef}
-                key={currentImage?.url || 'empty'}
+                key={currentImage?.public_id || currentImage?.url || currentIndex}
                 src={getOptimizedUrl(currentImage?.url, 'image', 1600)}
                 alt={cleanTitle}
                 initial={{ opacity: 0 }}
@@ -250,16 +250,16 @@ const GallerySection = ({
             </AnimatePresence>
             {images.length > 1 && (
               <>
-                <button onClick={(e) => { e.stopPropagation(); prevImage(); }} className="absolute left-4 top-1/2 -translate-y-1/2 p-4 bg-black/30 hover:bg-black/60 backdrop-blur-md rounded-full opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10 text-white"><ChevronLeft size={32} /></button>
-                <button onClick={(e) => { e.stopPropagation(); nextImage(); }} className="absolute right-4 top-1/2 -translate-y-1/2 p-4 bg-black/30 hover:bg-black/60 backdrop-blur-md rounded-full opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-10 text-white"><ChevronRight size={32} /></button>
+                <button onClick={(e) => { e.stopPropagation(); prevImage(); }} className="absolute left-4 top-1/2 -translate-y-1/2 p-2 sm:p-4 bg-black/30 hover:bg-black/60 backdrop-blur-md rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all hover:scale-110 z-10 text-white"><ChevronLeft size={24} className="sm:w-8 sm:h-8" /></button>
+                <button onClick={(e) => { e.stopPropagation(); nextImage(); }} className="absolute right-4 top-1/2 -translate-y-1/2 p-2 sm:p-4 bg-black/30 hover:bg-black/60 backdrop-blur-md rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all hover:scale-110 z-10 text-white"><ChevronRight size={24} className="sm:w-8 sm:h-8" /></button>
               </>
             )}
           </motion.div>
 
           <div className="flex justify-between items-center mt-6 px-2">
             <div className="flex gap-1.5">
-              {images.map((_, index) => (
-                <div key={index} className={`h-1.5 rounded-full transition-all duration-300 ${index === currentIndex ? 'w-8 bg-theme-line' : 'w-2 bg-theme-secondary opacity-40'}`} />
+              {images.map((img, index) => (
+                <div key={img.public_id || `dot-${index}`} className={`h-1.5 rounded-full transition-all duration-300 ${index === currentIndex ? 'w-8 bg-theme-line' : 'w-2 bg-theme-secondary opacity-40'}`} />
               ))}
             </div>
             <div className="px-3 py-1 bg-theme-secondary/20 backdrop-blur-sm rounded-full text-theme-primary text-xs font-bold">{currentIndex + 1} / {images.length}</div>
@@ -267,7 +267,7 @@ const GallerySection = ({
           {images.length > 1 && (
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-wrap justify-center gap-3 mt-8">
               {images.map((img, index) => (
-                <motion.div key={`thumb-${id}-${index}-${(img.url || index).toString().slice(-10)}`} whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} className={getThumbnailWidth()}>
+                <motion.div key={`thumb-${id}-${img.public_id || index}`} whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} className={getThumbnailWidth()}>
                   <div className={`relative w-full pb-[100%] rounded-lg overflow-hidden bg-black cursor-pointer transition-all duration-300 border-2 ${index === currentIndex ? 'border-theme-line shadow-xl scale-110 z-10' : 'border-transparent opacity-50 hover:opacity-100'}`} onClick={() => selectImage(index)}>
                     {!thumbnailsLoaded[index] && (<div className="absolute inset-0 flex items-center justify-center bg-black z-10"><div className="w-6 h-6 border-2 border-theme-line border-t-transparent rounded-full animate-spin" /></div>)}
                     <img
