@@ -105,9 +105,9 @@ function Portfolio() {
 
   const navDisplayName = useMemo(() => {
     const currentName = footerName[mode];
-    if (!currentName) return "RON MEDINA";
+    if (!currentName) return "CHARLIE GALANG";
     const clean = currentName.replace(/<[^>]*>/g, '').trim();
-    return clean || "RON MEDINA";
+    return clean || "CHARLIE GALANG";
   }, [footerName, mode]);
 
   const allAssets = useMemo(() => gallerySections.flatMap((section) => section.images), [gallerySections]);
